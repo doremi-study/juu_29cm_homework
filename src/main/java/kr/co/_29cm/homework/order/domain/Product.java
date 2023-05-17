@@ -19,4 +19,9 @@ public class Product {
 	public void updateQuantity(Quantity remainingQuantity) {
 		this.quantity = remainingQuantity;
 	}
+
+	public boolean equalProductNumber(int productNumber) {
+		ProductNumber inputProductNumber = new ProductNumber(productNumber);
+		return this.productNumber.equals(inputProductNumber);
+	}
 }

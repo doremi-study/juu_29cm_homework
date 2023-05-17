@@ -9,7 +9,7 @@ public class Price {
 	public int price;
 
 	public Price(int price) {
-		if (price <= 0) {
+		if (price < 0) {
 			throw new IllegalArgumentException("금액은 마이너스가 될 수 없습니다.");
 		}
 		this.price = price;

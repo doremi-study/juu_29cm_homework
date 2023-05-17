@@ -1,9 +1,10 @@
 package kr.co._29cm.homework.order.domain;
 
 import kr.co._29cm.homework.util.NumberFormatter;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-@Getter
+@Getter @EqualsAndHashCode
 public class ProductNumber {
 	private final String productNumber;
 
