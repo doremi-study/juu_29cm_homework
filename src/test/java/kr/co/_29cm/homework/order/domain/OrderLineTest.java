@@ -41,7 +41,7 @@ class OrderLineTest {
 	@Test
 	void placeOrder() {
 		//given
-		Order order1 = putOrder(782858, 1);
+		Order order1 = putOrder(648418, 1);
 		Order order2 = putOrder(628066, 2);
 
 		List<Order> orders = new ArrayList<>();
@@ -54,6 +54,7 @@ class OrderLineTest {
 
 		//then
 		orderLine.resultDisplay();
+
 	}
 
 	private Order putOrder(int inputOrderNumber, int inputQuantity) {

@@ -1,5 +1,6 @@
 package kr.co._29cm.homework.order.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import kr.co._29cm.homework.exception.SoldOutException;
@@ -20,9 +21,9 @@ public class OrderLine {
 		OrderProcessor orderProcessor = new OrderProcessor(orders);
 		orderProcessor.checkBeforePlaceOrder();
 		orderProcessor.purchase();
-		int productTotalPrice = orderProcessor.calculateTotalPrice(orders);
-		int shippingPrice = orderProcessor.calculateDeliveryPrice(productTotalPrice);
-		int finalPrice = productTotalPrice + shippingPrice;
+		BigDecimal productTotalPrice = orderProcessor.calculateTotalPrice(orders);
+		int shippingPrice = orderProcessor.calculateDeliveryPrice(productTotalPrice.intValue());
+		BigDecimal finalPrice = productTotalPrice.add(new BigDecimal(shippingPrice));
 
 		return OrderLine.builder()
 			.orders(orders)

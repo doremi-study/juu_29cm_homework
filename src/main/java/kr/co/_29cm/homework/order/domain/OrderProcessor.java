@@ -1,5 +1,6 @@
 package kr.co._29cm.homework.order.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import kr.co._29cm.homework.exception.SoldOutException;
@@ -17,10 +18,13 @@ public class OrderProcessor {
 		return totalPrice < MINIMUM_FREE_SHIPPING_PRICE ? DEFAULT_SHIPPING_PRICE : 0;
 	}
 
-	public int calculateTotalPrice(List<Order> orderList) {
+	public BigDecimal calculateTotalPrice(List<Order> orderList) {
 		return orderList.stream()
-			.mapToInt(order -> order.getProduct().getPrice().getPrice())
-			.sum();
+			.map(Order::getProduct)
+			.map(Product::getPrice)
+			.map(Price::getPrice)
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+
 	}
 
 	public void checkBeforePlaceOrder() {
