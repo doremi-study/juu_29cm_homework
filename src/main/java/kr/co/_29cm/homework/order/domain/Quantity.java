@@ -27,25 +27,42 @@ public class Quantity {
 		return new AtomicInteger(initialQuantity);
 	}
 
-	public Quantity subtractPurchaseQuantity(Quantity purchaseQuantity) {
-		int currentQuantity = quantity.get();
+	public synchronized Quantity subtractPurchaseQuantity(Quantity purchaseQuantity) {
 		int subtractedQuantity = purchaseQuantity.getQuantity();
+		AtomicInteger currentQuantity = new AtomicInteger(quantity.get());
 
-		if (currentQuantity - subtractedQuantity < 0) {
+		int updatedQuantity = currentQuantity.addAndGet(-subtractedQuantity);
+		if (updatedQuantity < 0) {
 			throw new SoldOutException();
 		}
 
-		int newQuantity = currentQuantity - subtractedQuantity;
-		return new Quantity(newQuantity);
+		return new Quantity(updatedQuantity);
 	}
 
 	public int getQuantity() {
 		return quantity.get();
 	}
 
-	public Boolean isAvailablePurchaseQuantity(Quantity purchaseQuantity) {
-		int currentQuantity = quantity.get();
+	// public Boolean isAvailablePurchaseQuantity(Quantity purchaseQuantity) {
+	// 	int currentQuantity = quantity.get();
+	// 	int subtractedQuantity = purchaseQuantity.getQuantity();
+	// 	return currentQuantity - subtractedQuantity >= 0;
+	// }
+
+	// public boolean isAvailablePurchaseQuantity(Quantity purchaseQuantity) {
+	// 	int currentQuantity = quantity.get();
+	// 	int subtractedQuantity = purchaseQuantity.getQuantity();
+	// 	int newQuantity = currentQuantity - subtractedQuantity;
+	//
+	// 	return quantity.getAndDecrement() >= subtractedQuantity;
+	// }
+
+
+	public boolean isAvailablePurchaseQuantity(Quantity purchaseQuantity) {
 		int subtractedQuantity = purchaseQuantity.getQuantity();
-		return currentQuantity - subtractedQuantity >= 0;
+		AtomicInteger currentQuantity = new AtomicInteger(quantity.get());
+
+		int updatedQuantity = currentQuantity.addAndGet(-subtractedQuantity);
+		return updatedQuantity >= 0;
 	}
 }

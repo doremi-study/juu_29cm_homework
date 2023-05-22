@@ -11,7 +11,7 @@ public class OrderProcessor {
 	private static final int MINIMUM_FREE_SHIPPING_PRICE = 5000;
 	private static final int DEFAULT_SHIPPING_PRICE = 2500;
 
-	public static OrderReceipt process(List<Order> orders) {
+	public synchronized static OrderReceipt process(List<Order> orders) {
 		boolean availablePlaceOrder = OrderProcessor.isAvailablePlaceOrder(orders);
 		if (availablePlaceOrder) {
 			purchase(orders);

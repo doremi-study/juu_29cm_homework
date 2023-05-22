@@ -16,9 +16,9 @@ public class OrderManager {
 	private final List<Product> products;
 	private final Scanner scanner;
 
-	public OrderManager(List<Product> products) {
+	public OrderManager(List<Product> products, Scanner scanner) {
 		this.products = products;
-		this.scanner = new Scanner(System.in);
+		this.scanner = scanner;
 	}
 
 	public void startOrdering() {
@@ -32,7 +32,6 @@ public class OrderManager {
 			} catch (SoldOutException exception) {
 				System.out.println(exception.getMessage());
 			}
-
 		} while (askForNewOrder());
 	}
 
@@ -61,5 +60,4 @@ public class OrderManager {
 
 		return "o".equals(userChoice);
 	}
-
 }
