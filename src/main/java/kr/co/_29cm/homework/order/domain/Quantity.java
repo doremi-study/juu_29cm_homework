@@ -3,7 +3,6 @@ package kr.co._29cm.homework.order.domain;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import kr.co._29cm.homework.exception.SoldOutException;
-import lombok.Getter;
 
 public class Quantity {
 	private final AtomicInteger quantity;
@@ -33,7 +32,7 @@ public class Quantity {
 		int subtractedQuantity = purchaseQuantity.getQuantity();
 
 		if (currentQuantity - subtractedQuantity < 0) {
-			throw new SoldOutException("재고가 부족합니다.");
+			throw new SoldOutException();
 		}
 
 		int newQuantity = currentQuantity - subtractedQuantity;

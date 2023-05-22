@@ -2,6 +2,7 @@ package kr.co._29cm.homework.order.domain;
 
 import java.util.List;
 
+import kr.co._29cm.homework.exception.NotFoundProductException;
 import lombok.Getter;
 
 @Getter
@@ -16,7 +17,7 @@ public class OrderLine {
 	}
 
 	private Product findProducts(List<Product> products) {
-		return products.stream().filter(v -> v.equalProductNumber(productNumber)).findFirst().orElseThrow(() -> new IllegalArgumentException("제품을 찾을 수 없습니다."));
+		return products.stream().filter(v -> v.equalProductNumber(productNumber)).findFirst().orElseThrow(NotFoundProductException::new);
 	}
 
 	public Order toOrder(List<Product> products) {

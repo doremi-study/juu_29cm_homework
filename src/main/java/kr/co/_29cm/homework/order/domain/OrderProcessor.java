@@ -12,18 +12,32 @@ public class OrderProcessor {
 	private static final int DEFAULT_SHIPPING_PRICE = 2500;
 
 	public static OrderReceipt process(List<Order> orders) {
-		boolean availablePlaceOrder = isAvailablePlaceOrder(orders);
-
-		if (!availablePlaceOrder) {
-			orderFail();
+		boolean availablePlaceOrder = OrderProcessor.isAvailablePlaceOrder(orders);
+		if (availablePlaceOrder) {
+			purchase(orders);
+		} else {
+			fail();
 		}
-
-		orderSuccess(orders);
 
 		BigDecimal totalProductPrice = totalProductPrice(orders);
 		BigDecimal totalOrderPrice = totalOrderPrice(totalProductPrice);
-
 		return new OrderReceipt(orders, totalProductPrice, totalOrderPrice);
+	}
+
+	private static void fail() {
+		throw new SoldOutException();
+	}
+
+	private static boolean isAvailablePlaceOrder(List<Order> orders) {
+		for (Order order : orders) {
+			Quantity currentQuantity = order.getProduct().getQuantity();
+			Quantity purchaseQuantity = order.getQuantity();
+			boolean isAvailable = currentQuantity.isAvailablePurchaseQuantity(purchaseQuantity);
+			if (!isAvailable) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static BigDecimal totalOrderPrice(BigDecimal productTotalPrice) {
@@ -44,29 +58,11 @@ public class OrderProcessor {
 
 	}
 
-	private static boolean isAvailablePlaceOrder(List<Order> orders) {
-		for (Order order : orders) {
-			Quantity currentQuantity = order.getProduct().getQuantity();
-			Quantity purchaseQuantity = order.getQuantity();
-
-			boolean isAvailable = currentQuantity.isAvailablePurchaseQuantity(purchaseQuantity);
-
-			if (!isAvailable) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private static void orderSuccess(List<Order> orders) {
+	private static void purchase(List<Order> orders) {
 		for (Order order : orders) {
 			Product product = order.getProduct();
 			product.decreaseStockByPurchaseQuantity(order.getQuantity());
 		}
-	}
-
-	private static void orderFail() {
-		throw new SoldOutException();
 	}
 
 }

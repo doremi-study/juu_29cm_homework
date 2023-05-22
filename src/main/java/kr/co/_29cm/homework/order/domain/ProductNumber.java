@@ -1,5 +1,6 @@
 package kr.co._29cm.homework.order.domain;
 
+import kr.co._29cm.homework.exception.BlankInputException;
 import kr.co._29cm.homework.util.NumberFormatter;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class ProductNumber {
 
 	public ProductNumber(String productNumber) {
 		if (productNumber.isEmpty()) {
-			throw new IllegalArgumentException("잘못입력하셨습니다.");
+			throw new BlankInputException();
 		}
 
 		int number = Integer.parseInt(productNumber);
