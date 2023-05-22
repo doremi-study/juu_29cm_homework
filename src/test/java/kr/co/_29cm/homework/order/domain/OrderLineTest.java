@@ -1,7 +1,5 @@
 package kr.co._29cm.homework.order.domain;
 
-import static org.assertj.core.api.Assertions.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,30 +38,21 @@ class OrderLineTest {
 	@DisplayName("주문하기")
 	@Test
 	void placeOrder() {
-		//given
-		Order order1 = putOrder(648418, 1);
-		Order order2 = putOrder(628066, 2);
 
-		List<Order> orders = new ArrayList<>();
-		orders.add(order1);
-		orders.add(order2);
+		OrderLine orderLine1 = new OrderLine("760709", "71");
+		//NewOrderLine newOrderLine2 = new NewOrderLine("628066", "2");
 
+		List<OrderLine> orderLines = new ArrayList<>();
+		orderLines.add(orderLine1);
+		//newOrderLines.add(newOrderLine2);
 
-		//when
-		OrderLine orderLine = OrderLine.placeOrder(orders);
+		//newOrderLines.
 
-		//then
-		orderLine.resultDisplay();
+		List<Order> orders = Order.placeOrder(orderLines, products);
+		OrderReceipt orderReceipt = OrderProcessor.process(orders);
+
+		orderReceipt.print();
 
 	}
 
-	private Order putOrder(int inputOrderNumber, int inputQuantity) {
-		Product product = findProducts(inputOrderNumber);
-
-		return Order.putOrder(product, inputQuantity);
-	}
-
-	private Product findProducts(int inputOrderNumber) {
-		return products.stream().filter(v -> v.equalProductNumber(inputOrderNumber)).findFirst().orElseThrow(() -> new IllegalArgumentException("제품을 찾을 수 없습니다."));
-	}
 }

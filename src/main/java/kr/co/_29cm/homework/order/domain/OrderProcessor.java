@@ -4,21 +4,38 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import kr.co._29cm.homework.exception.SoldOutException;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter @AllArgsConstructor
+@Getter
 public class OrderProcessor {
 	private static final int MINIMUM_FREE_SHIPPING_PRICE = 5000;
 	private static final int DEFAULT_SHIPPING_PRICE = 2500;
 
-	private List<Order> orders;
+	public static OrderReceipt process(List<Order> orders) {
+		boolean availablePlaceOrder = isAvailablePlaceOrder(orders);
 
-	public int calculateDeliveryPrice(int totalPrice) {
+		if (!availablePlaceOrder) {
+			orderFail();
+		}
+
+		orderSuccess(orders);
+
+		BigDecimal totalProductPrice = totalProductPrice(orders);
+		BigDecimal totalOrderPrice = totalOrderPrice(totalProductPrice);
+
+		return new OrderReceipt(orders, totalProductPrice, totalOrderPrice);
+	}
+
+	private static BigDecimal totalOrderPrice(BigDecimal productTotalPrice) {
+		int shippingPrice = calculatedDeliveryPrice(productTotalPrice.intValue());
+		return productTotalPrice.add(new BigDecimal(shippingPrice));
+	}
+
+	private static int calculatedDeliveryPrice(int totalPrice) {
 		return totalPrice < MINIMUM_FREE_SHIPPING_PRICE ? DEFAULT_SHIPPING_PRICE : 0;
 	}
 
-	public BigDecimal calculateTotalPrice(List<Order> orderList) {
+	private static BigDecimal totalProductPrice(List<Order> orderList) {
 		return orderList.stream()
 			.map(Order::getProduct)
 			.map(Product::getPrice)
@@ -27,26 +44,29 @@ public class OrderProcessor {
 
 	}
 
-	public void checkBeforePlaceOrder() {
+	private static boolean isAvailablePlaceOrder(List<Order> orders) {
 		for (Order order : orders) {
 			Quantity currentQuantity = order.getProduct().getQuantity();
-			Quantity purchaseQuantity = order.getPurchaseQuantity();
+			Quantity purchaseQuantity = order.getQuantity();
 
 			boolean isAvailable = currentQuantity.isAvailablePurchaseQuantity(purchaseQuantity);
 
 			if (!isAvailable) {
-				throw new SoldOutException("[" + order.getProduct().getProductName() + "] 해당 상품의 재고가 부족합니다. ");
+				return false;
 			}
+		}
+		return true;
+	}
+
+	private static void orderSuccess(List<Order> orders) {
+		for (Order order : orders) {
+			Product product = order.getProduct();
+			product.decreaseStockByPurchaseQuantity(order.getQuantity());
 		}
 	}
 
-	public void purchase() {
-		for (Order order : orders) {
-			Product product = order.getProduct();
-			Quantity purchaseQuantity = order.getPurchaseQuantity();
-			Quantity remainingQuantity = product.getQuantity().subtractPurchaseQuantity(purchaseQuantity);
-			//Quantity remainingQuantity = product.getQuantity().subtractPurchaseQuantity(purchaseQuantity);
-			product.updateQuantity(remainingQuantity);
-		}
+	private static void orderFail() {
+		throw new SoldOutException();
 	}
+
 }

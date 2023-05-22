@@ -16,12 +16,16 @@ public class Product {
 		this.quantity = new Quantity(quantity);
 	}
 
-	public void updateQuantity(Quantity remainingQuantity) {
-		this.quantity = remainingQuantity;
+	public void decreaseStockByPurchaseQuantity(Quantity purchaseQuantity) {
+		this.quantity = this.getQuantity().subtractPurchaseQuantity(purchaseQuantity);
 	}
 
 	public boolean equalProductNumber(int productNumber) {
 		ProductNumber inputProductNumber = new ProductNumber(productNumber);
 		return this.productNumber.equals(inputProductNumber);
+	}
+
+	public boolean equalProductNumber(ProductNumber productNumber) {
+		return this.productNumber.equals(productNumber);
 	}
 }

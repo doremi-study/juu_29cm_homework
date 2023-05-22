@@ -1,52 +1,27 @@
 package kr.co._29cm.homework.order.domain;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import kr.co._29cm.homework.exception.SoldOutException;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
-@AllArgsConstructor
-@Builder
+@Getter
 public class OrderLine {
 
-	public List<Order> orders;
-	private final Price shippingPrice;
-	private final Price productTotalPrice;
-	private final Price finalTotalPrice;
+	private final ProductNumber productNumber;
+	private final Quantity quantity;
 
-	public static OrderLine placeOrder(List<Order> orders) {
-		OrderProcessor orderProcessor = new OrderProcessor(orders);
-		orderProcessor.checkBeforePlaceOrder();
-		orderProcessor.purchase();
-		BigDecimal productTotalPrice = orderProcessor.calculateTotalPrice(orders);
-		int shippingPrice = orderProcessor.calculateDeliveryPrice(productTotalPrice.intValue());
-		BigDecimal finalPrice = productTotalPrice.add(new BigDecimal(shippingPrice));
-
-		return OrderLine.builder()
-			.orders(orders)
-			.shippingPrice(new Price(shippingPrice))
-			.productTotalPrice(new Price(productTotalPrice))
-			.finalTotalPrice(new Price(finalPrice))
-			.build();
+	public OrderLine(String productNumber, String quantity) {
+		this.productNumber = new ProductNumber(productNumber);
+		this.quantity = new Quantity(quantity);
 	}
 
-	public void resultDisplay() {
-		System.out.println("-----------------------------------");
-		for (Order order : orders) {
-			String productName = order.getProduct().getProductName();
-			int quantity = order.getPurchaseQuantity().getQuantity();
+	private Product findProducts(List<Product> products) {
+		return products.stream().filter(v -> v.equalProductNumber(productNumber)).findFirst().orElseThrow(() -> new IllegalArgumentException("제품을 찾을 수 없습니다."));
+	}
 
-			System.out.println(productName + " - " + quantity + "개");
-		}
-
-		System.out.println("-----------------------------------");
-		System.out.println("주문금액 : " + this.productTotalPrice.priceWithCommas() + "원");
-		System.out.println("-----------------------------------");
-		System.out.println("지불금액 : " + this.finalTotalPrice.priceWithCommas() + "원");
-		System.out.println("-----------------------------------");
+	public Order toOrder(List<Product> products) {
+		Product product = findProducts(products);
+		return new Order(product, quantity);
 	}
 
 }

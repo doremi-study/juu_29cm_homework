@@ -5,15 +5,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 import kr.co._29cm.homework.exception.SoldOutException;
 import lombok.Getter;
 
-@Getter
 public class Quantity {
 	private final AtomicInteger quantity;
 
 	public Quantity(int initialQuantity) {
+		quantity = create(initialQuantity);
+	}
+
+	public Quantity(String initialQuantity) {
+		if (initialQuantity.isEmpty()) {
+			throw new IllegalArgumentException("잘못입력하셨습니다.");
+		}
+		int numberQuantity = Integer.parseInt(initialQuantity);
+		quantity = create(numberQuantity);
+	}
+
+	private AtomicInteger create(int initialQuantity) {
+		final AtomicInteger quantity;
 		if (initialQuantity < 0) {
 			throw new IllegalArgumentException("재고 수량은 0개 이상이여야 합니다.");
 		}
-		this.quantity = new AtomicInteger(initialQuantity);
+		return new AtomicInteger(initialQuantity);
 	}
 
 	public Quantity subtractPurchaseQuantity(Quantity purchaseQuantity) {
