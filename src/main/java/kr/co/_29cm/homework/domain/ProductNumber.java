@@ -1,4 +1,4 @@
-package kr.co._29cm.homework.order.domain;
+package kr.co._29cm.homework.domain;
 
 import kr.co._29cm.homework.exception.BlankInputException;
 import kr.co._29cm.homework.util.NumberFormatter;
@@ -20,6 +20,5 @@ public class ProductNumber {
 
 		int number = Integer.parseInt(productNumber);
 		this.productNumber = NumberFormatter.lpadNumber(number);
-
 	}
 }

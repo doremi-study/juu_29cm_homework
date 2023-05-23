@@ -1,4 +1,4 @@
-package kr.co._29cm.homework.order.domain;
+package kr.co._29cm.homework.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +48,8 @@ class OrderLineTest {
 
 		//newOrderLines.
 
-		List<Order> orders = Order.placeOrder(orderLines, products);
-		OrderReceipt orderReceipt = OrderProcessor.process(orders);
+		Orders orders = Orders.placeOrder(orderLines, products);
+		OrderReceipt orderReceipt = OrderReceipt.create(orders);
 
 		orderReceipt.print();
 

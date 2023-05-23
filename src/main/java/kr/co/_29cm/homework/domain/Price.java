@@ -1,12 +1,10 @@
-package kr.co._29cm.homework.order.domain;
+package kr.co._29cm.homework.domain;
 
 import java.math.BigDecimal;
 
 import kr.co._29cm.homework.exception.NegativePriceException;
 import kr.co._29cm.homework.util.NumberFormatter;
-import lombok.Getter;
 
-@Getter
 public class Price {
 	public BigDecimal price;
 
@@ -26,5 +24,9 @@ public class Price {
 
 	public String priceWithCommas() {
 		return NumberFormatter.formatNumberWithCommas(this.price.intValue());
+	}
+
+	public BigDecimal getPriceAsBigDecimal() {
+		return price;
 	}
 }

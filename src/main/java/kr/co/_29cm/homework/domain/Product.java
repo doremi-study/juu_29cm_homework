@@ -1,4 +1,4 @@
-package kr.co._29cm.homework.order.domain;
+package kr.co._29cm.homework.domain;
 
 import lombok.Getter;
 
@@ -18,11 +18,6 @@ public class Product {
 
 	public void decreaseStockByPurchaseQuantity(Quantity purchaseQuantity) {
 		this.quantity = this.getQuantity().subtractPurchaseQuantity(purchaseQuantity);
-	}
-
-	public boolean equalProductNumber(int productNumber) {
-		ProductNumber inputProductNumber = new ProductNumber(productNumber);
-		return this.productNumber.equals(inputProductNumber);
 	}
 
 	public boolean equalProductNumber(ProductNumber productNumber) {
