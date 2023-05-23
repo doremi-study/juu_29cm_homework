@@ -48,8 +48,8 @@ class OrderLineTest {
 
 		//newOrderLines.
 
-		List<Order> orders = Order.placeOrder(orderLines, products);
-		OrderReceipt orderReceipt = OrderProcessor.process(orders);
+		Orders orders = Orders.placeOrder(orderLines, products);
+		OrderReceipt orderReceipt = OrderReceipt.create(orders);
 
 		orderReceipt.print();
 

@@ -4,24 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import kr.co._29cm.homework.domain.OrderLine;
+import kr.co._29cm.homework.domain.OrderReceipt;
+import kr.co._29cm.homework.domain.Orders;
+import kr.co._29cm.homework.domain.Product;
 import kr.co._29cm.homework.exception.InvalidInputException;
 import kr.co._29cm.homework.exception.SoldOutException;
-import kr.co._29cm.homework.domain.Order;
-import kr.co._29cm.homework.domain.OrderLine;
-import kr.co._29cm.homework.domain.OrderProcessor;
-import kr.co._29cm.homework.domain.OrderReceipt;
-import kr.co._29cm.homework.domain.Product;
 
 public class OrderManager {
+
+	private final List<Product> products;
+	private final Scanner scanner;
 
 	private static final String CONTINUE_ORDER = "o";
 	private static final String QUIT_ORDER = "q";
 	private static final String QUESTION_PRODUCT_NUMBER = "상품번호:";
 	private static final String QUESTION_QUANTITY = "수량:";
 	private static final String QUESTION_CONTINUE_ORDER = "입력(o[order]: 주문, q[quit]: 종료):";
-
-	private final List<Product> products;
-	private final Scanner scanner;
 
 	public OrderManager(List<Product> products, Scanner scanner) {
 		this.products = products;
@@ -32,9 +31,9 @@ public class OrderManager {
 		do {
 			List<OrderLine> orderLines = createOrderLines();
 
-			List<Order> orders = Order.placeOrder(orderLines, products);
+			Orders orders = Orders.placeOrder(orderLines, products);
 			try {
-				OrderReceipt orderReceipt = OrderProcessor.process(orders);
+				OrderReceipt orderReceipt = OrderReceipt.create(orders);
 				orderReceipt.print();
 			} catch (SoldOutException exception) {
 				System.out.println(exception.getMessage());

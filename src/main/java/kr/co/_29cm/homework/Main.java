@@ -3,15 +3,7 @@ package kr.co._29cm.homework;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
-import kr.co._29cm.homework.exception.SoldOutException;
-import kr.co._29cm.homework.domain.Order;
-import kr.co._29cm.homework.domain.OrderLine;
-import kr.co._29cm.homework.domain.OrderProcessor;
-import kr.co._29cm.homework.domain.OrderReceipt;
 import kr.co._29cm.homework.domain.Product;
 import kr.co._29cm.homework.service.OrderManager;
 
@@ -20,7 +12,6 @@ public class Main {
 	public static void main(String[] args) {
 
 		order();
-		//multiThreadTest();
 	}
 
 	private static void order() {
@@ -28,51 +19,6 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		OrderManager orderManager = new OrderManager(products, scanner);
 		orderManager.startOrdering();
-	}
-
-	public static void multiThreadTest() {
-		List<Product> products = setUp();
-		int numThreads = 8; // 동시에 실행할 스레드 수
-
-		ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
-
-		for (int i = 0; i < numThreads; i++) {
-			executorService.submit(() -> {
-				try {
-					// 각 스레드마다 별도의 OrderLine 생성
-					List<OrderLine> orderLines = new ArrayList<>();
-					orderLines.add(new OrderLine("782858", "7"));
-
-					List<Order> orders = Order.placeOrder(orderLines, products);
-
-					OrderReceipt orderReceipt = OrderProcessor.process(orders);
-
-					// 실제 처리된 주문 목록과 재고 상황 출력
-					for (Order order : orderReceipt.getOrders()) {
-						System.out.println("이름: " + order.getProduct().getProductName() + ", 남은 수량: " + order.getProduct().getQuantity().getQuantityAsInt() + "개");
-					}
-
-				} catch (SoldOutException exception) {
-					System.out.println(exception.getMessage());
-				}
-
-			});
-		}
-
-		executorService.shutdown();
-		try {
-			executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		System.out.println("-----------------------------------------------");
-		// 모든 스레드 작업 완료 후 재고 상황 출력
-		for (Product product : products) {
-			System.out.println("상품번호: " + product.getProductNumber().getProductNumber()  + ", 상품이름: " + product.getProductName() + ", 남은 수량: " + product.getQuantity().getQuantityAsInt() + "개");
-		}
-		System.out.println("-----------------------------------------------");
-
 	}
 
 	private static List<Product> setUp() {
