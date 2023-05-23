@@ -8,11 +8,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import kr.co._29cm.homework.exception.SoldOutException;
-import kr.co._29cm.homework.order.domain.Order;
-import kr.co._29cm.homework.order.domain.OrderLine;
-import kr.co._29cm.homework.order.domain.OrderProcessor;
-import kr.co._29cm.homework.order.domain.OrderReceipt;
-import kr.co._29cm.homework.order.domain.Product;
+import kr.co._29cm.homework.domain.Order;
+import kr.co._29cm.homework.domain.OrderLine;
+import kr.co._29cm.homework.domain.OrderProcessor;
+import kr.co._29cm.homework.domain.OrderReceipt;
+import kr.co._29cm.homework.domain.Product;
 import kr.co._29cm.homework.service.OrderManager;
 
 public class Main {
@@ -49,7 +49,7 @@ public class Main {
 
 					// 실제 처리된 주문 목록과 재고 상황 출력
 					for (Order order : orderReceipt.getOrders()) {
-						System.out.println("이름: " + order.getProduct().getProductName() + ", 남은 수량: " + order.getProduct().getQuantity().getQuantity() + "개");
+						System.out.println("이름: " + order.getProduct().getProductName() + ", 남은 수량: " + order.getProduct().getQuantity().getQuantityAsInt() + "개");
 					}
 
 				} catch (SoldOutException exception) {
@@ -69,7 +69,7 @@ public class Main {
 		System.out.println("-----------------------------------------------");
 		// 모든 스레드 작업 완료 후 재고 상황 출력
 		for (Product product : products) {
-			System.out.println("상품번호: " + product.getProductNumber().getProductNumber()  + ", 상품이름: " + product.getProductName() + ", 남은 수량: " + product.getQuantity().getQuantity() + "개");
+			System.out.println("상품번호: " + product.getProductNumber().getProductNumber()  + ", 상품이름: " + product.getProductName() + ", 남은 수량: " + product.getQuantity().getQuantityAsInt() + "개");
 		}
 		System.out.println("-----------------------------------------------");
 

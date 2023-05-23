@@ -1,12 +1,10 @@
-package kr.co._29cm.homework.order.domain;
+package kr.co._29cm.homework.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import lombok.Getter;
-
 public class OrderReceipt {
-	@Getter
+
 	private final List<Order> orders;
 	private final Price productTotalPrice;
 	private final Price finalTotalPrice;
@@ -21,7 +19,7 @@ public class OrderReceipt {
 		System.out.println("-----------------------------------");
 		for (Order order : orders) {
 			String productName = order.getProduct().getProductName();
-			int quantity = order.getQuantity().getQuantity();
+			int quantity = order.getQuantity().getQuantityAsInt();
 
 			System.out.println(productName + " - " + quantity + "개");
 		}
@@ -33,9 +31,7 @@ public class OrderReceipt {
 		System.out.println("-----------------------------------");
 	}
 
-	public void ss() {
-		for (Order order : orders) {
-			System.out.println("이름 : " + order.getProduct().getProductName() + ", 남은 수량 :" + order.getProduct().getQuantity().getQuantity() + " 개");
-		}
+	public List<Order> getOrders() {
+		return orders;
 	}
 }

@@ -4,14 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import kr.co._29cm.homework.exception.InvalidInputException;
 import kr.co._29cm.homework.exception.SoldOutException;
-import kr.co._29cm.homework.order.domain.Order;
-import kr.co._29cm.homework.order.domain.OrderLine;
-import kr.co._29cm.homework.order.domain.OrderProcessor;
-import kr.co._29cm.homework.order.domain.OrderReceipt;
-import kr.co._29cm.homework.order.domain.Product;
+import kr.co._29cm.homework.domain.Order;
+import kr.co._29cm.homework.domain.OrderLine;
+import kr.co._29cm.homework.domain.OrderProcessor;
+import kr.co._29cm.homework.domain.OrderReceipt;
+import kr.co._29cm.homework.domain.Product;
 
 public class OrderManager {
+
+	private static final String CONTINUE_ORDER = "o";
+	private static final String QUIT_ORDER = "q";
+	private static final String QUESTION_PRODUCT_NUMBER = "상품번호:";
+	private static final String QUESTION_QUANTITY = "수량:";
+	private static final String QUESTION_CONTINUE_ORDER = "입력(o[order]: 주문, q[quit]: 종료):";
 
 	private final List<Product> products;
 	private final Scanner scanner;
@@ -38,10 +45,10 @@ public class OrderManager {
 	private List<OrderLine> createOrderLines() {
 		List<OrderLine> orderLines = new ArrayList<>();
 		while (true) {
-			System.out.println("상품번호:");
+			System.out.println(QUESTION_PRODUCT_NUMBER);
 			String productNumber = scanner.nextLine();
 
-			System.out.println("수량:");
+			System.out.println(QUESTION_QUANTITY);
 			String quantity = scanner.nextLine();
 
 			if (productNumber.isBlank() && quantity.isBlank()) {
@@ -55,9 +62,21 @@ public class OrderManager {
 	}
 
 	private boolean askForNewOrder() {
-		System.out.println("입력(o[order]: 주문, q[quit]: 종료):");
-		String userChoice = scanner.nextLine();
+		while (true) {
+			System.out.println(QUESTION_CONTINUE_ORDER);
+			String userChoice = scanner.nextLine();
 
-		return "o".equals(userChoice);
+			try {
+				if (CONTINUE_ORDER.equals(userChoice)) {
+					return true;
+				} else if (QUIT_ORDER.equals(userChoice)) {
+					return false;
+				} else {
+					throw new InvalidInputException();
+				}
+			} catch (InvalidInputException e) {
+				System.out.println(e.getMessage());
+			}
+		}
 	}
 }

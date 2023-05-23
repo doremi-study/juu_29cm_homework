@@ -1,4 +1,4 @@
-package kr.co._29cm.homework.order.domain;
+package kr.co._29cm.homework.domain;
 
 import java.util.List;
 
@@ -16,13 +16,13 @@ public class OrderLine {
 		this.quantity = new Quantity(quantity);
 	}
 
-	private Product findProducts(List<Product> products) {
-		return products.stream().filter(v -> v.equalProductNumber(productNumber)).findFirst().orElseThrow(NotFoundProductException::new);
+	public Order toOrder(List<Product> products) {
+		Product product = findProduct(products);
+		return new Order(product, quantity);
 	}
 
-	public Order toOrder(List<Product> products) {
-		Product product = findProducts(products);
-		return new Order(product, quantity);
+	private Product findProduct(List<Product> products) {
+		return products.stream().filter(v -> v.equalProductNumber(productNumber)).findFirst().orElseThrow(NotFoundProductException::new);
 	}
 
 }

@@ -1,4 +1,4 @@
-package kr.co._29cm.homework.order.domain;
+package kr.co._29cm.homework.domain;
 
 import java.util.ArrayList;
 import java.util.List;

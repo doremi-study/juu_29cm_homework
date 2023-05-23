@@ -1,4 +1,4 @@
-package kr.co._29cm.homework.order.domain;
+package kr.co._29cm.homework.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -8,11 +8,13 @@ import lombok.Getter;
 
 @Getter
 public class OrderProcessor {
+
 	private static final int MINIMUM_FREE_SHIPPING_PRICE = 5000;
 	private static final int DEFAULT_SHIPPING_PRICE = 2500;
 
 	public synchronized static OrderReceipt process(List<Order> orders) {
 		boolean availablePlaceOrder = OrderProcessor.isAvailablePlaceOrder(orders);
+
 		if (availablePlaceOrder) {
 			purchase(orders);
 		} else {
@@ -53,7 +55,7 @@ public class OrderProcessor {
 		return orderList.stream()
 			.map(Order::getProduct)
 			.map(Product::getPrice)
-			.map(Price::getPrice)
+			.map(Price::getPriceAsBigDecimal)
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 	}
