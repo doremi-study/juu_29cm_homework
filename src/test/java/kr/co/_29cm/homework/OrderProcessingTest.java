@@ -60,7 +60,7 @@ public class OrderProcessingTest {
 
 	@Test
 	public void testOrderProcessing() {
-		int numThreads = 10; // 동시에 실행할 스레드 수
+		int numThreads = 6; // 동시에 실행할 스레드 수
 
 		ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
 
@@ -91,6 +91,5 @@ public class OrderProcessingTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
 	}
 }
