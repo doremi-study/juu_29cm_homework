@@ -38,39 +38,39 @@ public static void main(String[] args) {
 ``` java
 @Test
 public void testOrderProcessing() {
-	int numThreads = 10; // 동시에 실행할 스레드 수
+  int numThreads = 10; // 동시에 실행할 스레드 수
 
-	ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
-	AtomicBoolean exceptionCaught = new AtomicBoolean(false);
+  ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+  AtomicBoolean exceptionCaught = new AtomicBoolean(false);
 
-	for (int i = 0; i < numThreads; i++) {
-		executorService.submit(() -> {
-			try {
+  for (int i = 0; i < numThreads; i++) {
+      executorService.submit(() -> {
+          try {
 
-				List<OrderLine> orderLines = new ArrayList<>();
-				orderLines.add(new OrderLine("782858", "10"));
-				orderLines.add(new OrderLine("768848", "5"));
+              List<OrderLine> orderLines = new ArrayList<>();
+              orderLines.add(new OrderLine("782858", "10"));
+              orderLines.add(new OrderLine("768848", "5"));
 
-				Orders orders = Orders.placeOrder(orderLines, products);
-				OrderReceipt orderReceipt = OrderReceipt.create(orders);
-				...
+              Orders orders = Orders.placeOrder(orderLines, products);
+              OrderReceipt orderReceipt = OrderReceipt.create(orders);
+              ...
 
-			} catch (SoldOutException exception) {
-				System.out.println(exception.getMessage());
-				exceptionCaught.set(true);
-			}
+          } catch (SoldOutException exception) {
+              System.out.println(exception.getMessage());
+              exceptionCaught.set(true);
+          }
 
-		});
-	}
+      });
+  }
 
-	executorService.shutdown();
-	try {
-		executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-	} catch (InterruptedException e) {
-		e.printStackTrace();
-	}
+  executorService.shutdown();
+  try {
+      executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+  } catch (InterruptedException e) {
+      e.printStackTrace();
+  }
 
-	assertThat(exceptionCaught.get()).isTrue();
+  assertThat(exceptionCaught.get()).isTrue();
 }
 ```
 - `Main.class` 에는 실행 코드를 넣어놨고, `OrderProcessingTest.class` 에는 멀티스레드 테스트를 위한 테스트 코드가 위치해있다.
