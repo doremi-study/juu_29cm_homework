@@ -1,10 +1,13 @@
 package kr.co._29cm.homework;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,9 +63,10 @@ public class OrderProcessingTest {
 
 	@Test
 	public void testOrderProcessing() {
-		int numThreads = 6; // 동시에 실행할 스레드 수
+		int numThreads = 10; // 동시에 실행할 스레드 수
 
 		ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+		AtomicBoolean exceptionCaught = new AtomicBoolean(false);
 
 		for (int i = 0; i < numThreads; i++) {
 			executorService.submit(() -> {
@@ -70,6 +74,7 @@ public class OrderProcessingTest {
 
 					List<OrderLine> orderLines = new ArrayList<>();
 					orderLines.add(new OrderLine("782858", "10"));
+					orderLines.add(new OrderLine("768848", "5"));
 
 					Orders orders = Orders.placeOrder(orderLines, products);
 					OrderReceipt orderReceipt = OrderReceipt.create(orders);
@@ -80,6 +85,7 @@ public class OrderProcessingTest {
 
 				} catch (SoldOutException exception) {
 					System.out.println(exception.getMessage());
+					exceptionCaught.set(true);
 				}
 
 			});
@@ -91,5 +97,7 @@ public class OrderProcessingTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+		assertThat(exceptionCaught.get()).isTrue();
 	}
 }
