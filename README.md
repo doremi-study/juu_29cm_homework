@@ -1,5 +1,10 @@
 # 29CM 백엔드 과제
 
+## 프로젝트 사양
+- JDK 11 
+- Gradle 
+- lombok, assertJ 추가 
+
 ## Domain
 ### 주의했던 포인트
 > 모든 원시값과 문자열 포장
