@@ -30,40 +30,45 @@ public static void main(String[] args) {
     order();
 }
 ```
-```java
+``` java
 @Test
 public void testOrderProcessing() {
-    int numThreads = 6; // 동시에 실행할 스레드 수
+	int numThreads = 10; // 동시에 실행할 스레드 수
 
-    ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+	ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+	AtomicBoolean exceptionCaught = new AtomicBoolean(false);
 
-    for (int i = 0; i < numThreads; i++) {
-        executorService.submit(() -> {
-            try {
+	for (int i = 0; i < numThreads; i++) {
+		executorService.submit(() -> {
+			try {
 
-                List<OrderLine> orderLines = new ArrayList<>();
-                orderLines.add(new OrderLine("782858", "10"));
+				List<OrderLine> orderLines = new ArrayList<>();
+				orderLines.add(new OrderLine("782858", "10"));
+				orderLines.add(new OrderLine("768848", "5"));
 
-                Orders orders = Orders.placeOrder(orderLines, products);
-                OrderReceipt orderReceipt = OrderReceipt.create(orders);
-                
-                ...
-            } catch (SoldOutException exception) {
-                System.out.println(exception.getMessage());
-            }
+				Orders orders = Orders.placeOrder(orderLines, products);
+				OrderReceipt orderReceipt = OrderReceipt.create(orders);
+				...
 
-        });
-    }
+			} catch (SoldOutException exception) {
+				System.out.println(exception.getMessage());
+				exceptionCaught.set(true);
+			}
 
-    executorService.shutdown();
-    try {
-        executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-    }
+		});
+	}
+
+	executorService.shutdown();
+	try {
+		executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+	} catch (InterruptedException e) {
+		e.printStackTrace();
+	}
+
+	assertThat(exceptionCaught.get()).isTrue();
 }
 ```
 - `Main.class` 에는 실행 코드를 넣어놨고, `OrderProcessingTest.class` 에는 멀티스레드 테스트를 위한 테스트 코드가 위치해있다.
 
 1) `order()`의 경우 Main.class 에서 product 리스트를 setUp 해두고 OrderManager를 호출해 로직을 실행한다.
-2) `testOrderProcessing()`의 경우 재고가 50개인 상품을 10개씩 6번 호출하여 5개 이후 나머지 주문에서 `SoldOutException` 이 나는 걸 확인하는 코드이다. 추가적으로 주문 마다 남은 재고 갯수를 print 하는 로직도 추가하였다. 
+2) `testOrderProcessing()`의 경우 재고가 50개인 상품을 10개씩 10번 호출하여 5개 이후 나머지 주문에서 `SoldOutException` 이 나는 걸 확인하는 코드이다. 추가적으로 주문 마다 남은 재고 갯수를 print 하는 로직도 추가하였다. 에러 확인을 위해 catch 부분에 에러가 발생했을 경우 `AtomicBoolean`를 true로 바꿔주는 로직을 추가하여 모든 스레드가 끝나고 에러가 발생했는지 확인한다.  
